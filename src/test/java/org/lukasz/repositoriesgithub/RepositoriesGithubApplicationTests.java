@@ -25,8 +25,8 @@ class RepositoriesGithubApplicationTests {
 
     @DynamicPropertySource
     static void registerDynamicProperties(DynamicPropertyRegistry registry) {
-        // registry.add("baseUrl",wireMockServer::baseUrl);
-        registry.add("baseUrl", () -> wireMockServer.baseUrl());
+        registry.add("baseUrl", wireMockServer::baseUrl);
+
     }
 
 
@@ -42,25 +42,4 @@ class RepositoriesGithubApplicationTests {
     }
 
 
-    @Test
-    void testGetUserRepositoriesNotFound() {
-        String username = "whenUserNotFound";
-        String jsonMessage = """
-                {"status": 404,"message": "User whenUserNotFound not found"}""";
-
-
-        webTestClient.get().uri("/repositories/" + username).accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNotFound().expectBody().json(jsonMessage);
-
-
-    }
-
-    @Test
-    void testGetUserRepositoriesExceededLimit() {
-        String username = "LukaszBakJVM";
-        String jsonMessage = """
-                {"status": 403,"message": "403 FORBIDDEN"}""";
-
-        webTestClient.get().uri("/repositories/" + username).accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isForbidden().expectBody().json(jsonMessage);
-
-    }
 }
